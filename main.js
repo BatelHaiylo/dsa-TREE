@@ -6,60 +6,48 @@ function Node(data){
 function Tree(rootNode){
     this.root = rootNode
 
-    const addToTree = (nodeChildrens,parentNode) =>{
-        parentNode.children = [...parentNode.children,...nodeChildrens]
+    const addToTree = (nodechildrens,parentNode) =>{
+        parentNode.children = [...parentNode.children,...nodechildrens]
     }
-    const bfs = (wantedNode) => {
-        //log all the tree value
-        if(this.root == null){return "empty tree"}searchNode(this.root)
-        function searchNode(parentNode){
-            if(parentNode.children.lenght>0){
-                parentNode.children.map((child,index) => {
-                    if(child.data == wantedNode.data){
-                        return child
-                    }
-                    if(index == parentNode.children.lenght-1){
-                        searchNode(parentNode.children[0])}
-                })
-            }
-            else{
-                // pass to the next sibling
-                return "Node not found in this tree"
-            }
-        }
-    }
-    const dfs = () => {
-        //log all the tree value
-        let visited = []
-        if(this.root == null){return "empty tree"}searchNode(this.root)
-        function searchNode(parentNode){
-            if(parentNode.children.lenght>0){
-                parentNode.children.map((child,index) => {
-                    if(child.data == wantedNode.data){
-                        return child
-                    }
-                    else{
-                        visited.push(parentNode.children.pop(child))
-                        searchNode(child)
-                    }
-                })
-            }
-            else{
-                return "Node not found in this tree"
-            }
-        }
-
-
+    const bfs = (wantedNode, node=this.root) => {
+        nodesQueue = [node];
+        // nodesQueue.unshift(tree);
+        while (nodesQueue.length > 0) {
+          currentNode = nodesQueue.shift();
+          if (currentNode.value === wantedNode.value) {
+            return currentNode;
+          }
         
+          for (let i = 0; i < currentNode.children.length; i++) {
+            nodesQueue.push(currentNode.children[i]);
+          }
+        }
+        return "Node not found in this tree";
     }
-    const SearchNode = (treeTraversalFuncAsStr,wantedNode) => {
-        //return te serched node by the given func
-        if(treeTraversalFuncAsStr == "bfs"){return bfs(wantedNode)}
-        if(treeTraversalFuncAsStr == "dfs"){return dfs(wantedNode)}
+    const dfs = (value, node=this.root) => {
+      if (node.value === value) {
+      return node;
+      }
+      
+      for (var i = 0; i < node.children.length; i++) {
+        var foundNode = dfs(value, node.children[i]);
+        if (foundNode) {
+          return foundNode;
+        }
+      }
+      return "Node not found in this tree";
     }
+
+    // const SearchNode = (treeTraversalFuncAsStr,wantedNode) => {
+    //     //return te searched node by the given func
+    //     if(treeTraversalFuncAsStr === "bfs"){return bfs(wantedNode)}
+    //     if(treeTraversalFuncAsStr === "dfs"){return dfs(wantedNode)}
+    // }
     return{ 
+        bfs,
+        dfs,
         addToTree,
-        SearchNode,
+        // SearchNode,
         root
     }
 }
@@ -69,5 +57,8 @@ const setRoot = new Tree (root)
 const child1 = new Node("first")
 const child2 = new Node("second")
 const child3 = new Node("third")
+
 console.log(setRoot.addToTree([child1,child2,child3],root))
-console.log(setRoot.SearchNode("bfs",child3))
+// console.log(setRoot.SearchNode("bfs",child3))
+console.log(setRoot.bfs(child3))
+console.log(setRoot.dfs(child3))
